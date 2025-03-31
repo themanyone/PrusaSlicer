@@ -709,7 +709,7 @@ void Plater::priv::init()
     panel_sizer = new wxBoxSizer(wxHORIZONTAL);
     panel_sizer->Add(view3D, 1, wxEXPAND | wxALL, 0);
     panel_sizer->Add(preview, 1, wxEXPAND | wxALL, 0);
-    left_panel->SetSizer(panel_sizer);
+    left_panel->SetSizerAndFit(panel_sizer);
 
     // Reparent sidebar to splitter
     sidebar->Reparent(splitter);
@@ -720,6 +720,21 @@ void Plater::priv::init()
     // Set initial sash position (e.g., 70% of width for left panel)
     int initial_width = q->GetSize().GetWidth();
     splitter->SetSashPosition(static_cast<int>(initial_width * 0.7));
+     // Ensure the left panel is visible and sidebar has a minimum width
+    splitter->Bind(wxEVT_SPLITTER_SASH_POS_CHANGED, [this, splitter](wxSplitterEvent& event) {
+        // Prevent the sash from being dragged too far to the left
+        int min_sash_pos = 22 * wxGetApp().em_unit();
+        if (event.GetSashPosition() < min_sash_pos) {
+            splitter->SetSashPosition(min_sash_pos);
+        }
+        event.Skip();
+    });
+    splitter->Bind(wxEVT_SIZE, [this, splitter](wxSizeEvent& event) {
+        // Maintain the sash position as a percentage of the window width
+        int new_width = event.GetSize().GetWidth();
+        int new_sash_pos = static_cast<int>(new_width * 0.7);
+        splitter->SetSashPosition(new_sash_pos);
+    });
 
     // Ensure the left panel is visible and sidebar has a minimum width
     splitter->SetMinimumPaneSize(22 * wxGetApp().em_unit()); // Minimum size for sidebar (right pane)
