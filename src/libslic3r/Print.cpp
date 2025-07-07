@@ -177,6 +177,7 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
         "toolchange_gcode",
         "top_solid_infill_acceleration",
         "travel_acceleration",
+        "travel_short_distance_acceleration",
         "thumbnails",
         "thumbnails_format",
         "use_firmware_retraction",
