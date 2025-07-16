@@ -100,6 +100,8 @@ bool Print::invalidate_state_by_config_options(const ConfigOptionResolver & /* n
         "chamber_minimal_temperature",
         "colorprint_heights",
         "cooling",
+        "cooling_slowdown_logic",
+        "cooling_perimeter_transition_distance",
         "default_acceleration",
         "deretract_speed",
         "disable_fan_first_layers",
