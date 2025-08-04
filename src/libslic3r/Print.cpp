@@ -756,19 +756,9 @@ std::string Print::validate(std::vector<std::string>* warnings) const
                 return _u8L("\"G92 E0\" was found in layer_gcode, which is incompatible with absolute extruder addressing.");
     }
     {
-        bool custom_pars_ok = true;
-        custom_pars_ok &= bool(parse_custom_parameters(m_config.custom_parameters_print));
-        custom_pars_ok &= bool(parse_custom_parameters(m_config.custom_parameters_printer));
-        if (custom_pars_ok) {
-            for (const auto& cp : m_config.custom_parameters_filament.values) {
-                if (! parse_custom_parameters(cp)) {
-                    custom_pars_ok = false;
-                    break;
-                }
-            }
-        }
-        if (! custom_pars_ok)
-            return std::string("Unable to parse custom parameters.");
+        std::string error_out;
+        if (! check_custom_parameters(m_config.custom_parameters_print, m_config.custom_parameters_printer, m_config.custom_parameters_filament.values, &error_out))
+            return std::string("Unable to parse custom parameters: " + error_out);
     }
 
     return std::string();
