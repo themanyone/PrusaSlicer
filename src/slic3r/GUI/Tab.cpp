@@ -29,6 +29,7 @@
 #include "libslic3r/GCode/GCodeProcessor.hpp"
 #include "libslic3r/GCode/GCodeWriter.hpp"
 #include "libslic3r/GCode/Thumbnails.hpp"
+#include "libslic3r/CustomParametersHandling.hpp"
 
 #include "slic3r/Utils/Http.hpp"
 #include "slic3r/Utils/PrintHost.hpp"
@@ -1410,6 +1411,16 @@ void Tab::update_frequently_changed_parameters()
         og_freq_chng_params->set_value("brim", bool(m_config->opt_float("brim_width") > 0.0));
         update_wiping_button_visibility();
     }
+}
+
+static void validate_custom_parameters(Tab* tab, const t_config_option_key& opt_key, const boost::any& value)
+{
+    if (! bool(parse_custom_parameters(boost::any_cast<std::string>(value)))) {
+        MessageDialog dialog(wxGetApp().mainframe, _L("Unable to parse custom parameters."), _L("Error"), wxICON_WARNING | wxOK);
+        dialog.ShowModal();
+    }
+    tab->update_dirty();
+    tab->on_value_change(opt_key, value);
 }
 
 void TabPrint::build()
