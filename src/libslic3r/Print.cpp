@@ -38,6 +38,7 @@
 #include "BuildVolume.hpp"
 #include "format.hpp"
 #include "ArrangeHelper.hpp"
+#include "CustomParametersHandling.hpp"
 
 #include <float.h>
 
@@ -753,6 +754,21 @@ std::string Print::validate(std::vector<std::string>* warnings) const
             return _u8L("\"G92 E0\" was found in before_layer_gcode, which is incompatible with absolute extruder addressing.");
         else if (layer_gcode_resets_extruder)
                 return _u8L("\"G92 E0\" was found in layer_gcode, which is incompatible with absolute extruder addressing.");
+    }
+    {
+        bool custom_pars_ok = true;
+        custom_pars_ok &= bool(parse_custom_parameters(m_config.custom_parameters_print));
+        custom_pars_ok &= bool(parse_custom_parameters(m_config.custom_parameters_printer));
+        if (custom_pars_ok) {
+            for (const auto& cp : m_config.custom_parameters_filament.values) {
+                if (! parse_custom_parameters(cp)) {
+                    custom_pars_ok = false;
+                    break;
+                }
+            }
+        }
+        if (! custom_pars_ok)
+            return std::string("Unable to parse custom parameters.");
     }
 
     return std::string();
