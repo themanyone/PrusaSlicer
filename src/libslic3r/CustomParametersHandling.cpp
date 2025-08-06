@@ -185,4 +185,29 @@ DynamicConfig parse_custom_parameters_to_dynamic_config(
     return config;
 }
 
+std::string merge_json(const std::string& bottom_json, const std::string& top_json)
+{
+    if (bottom_json.empty())
+        return top_json;
+    if (top_json.empty())
+        return bottom_json;
+
+    using json = nlohmann::json;
+
+    try {
+        json j_bottom = json::parse(bottom_json);
+        json j_top = json::parse(top_json);
+
+        if (!j_bottom.is_object() || !j_top.is_object()) {
+            return top_json;
+        }
+
+        j_bottom.merge_patch(j_top);
+        return j_bottom.dump();
+    }
+    catch (const json::parse_error&) {
+        return top_json;
+    }
+}
+
 } // namespace Slic3r
