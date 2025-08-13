@@ -29,6 +29,7 @@
 #include "libslic3r/GCode/GCodeProcessor.hpp"
 #include "libslic3r/GCode/GCodeWriter.hpp"
 #include "libslic3r/GCode/Thumbnails.hpp"
+#include "libslic3r/CustomParametersHandling.hpp"
 
 #include "slic3r/Utils/Http.hpp"
 #include "slic3r/Utils/PrintHost.hpp"
@@ -1412,6 +1413,16 @@ void Tab::update_frequently_changed_parameters()
     }
 }
 
+static void validate_custom_parameters(Tab* tab, const t_config_option_key& opt_key, const boost::any& value)
+{
+    if (! bool(parse_custom_parameters(boost::any_cast<std::string>(value)))) {
+        MessageDialog dialog(wxGetApp().mainframe, _L("Unable to parse custom parameters."), _L("Error"), wxICON_WARNING | wxOK);
+        dialog.ShowModal();
+    }
+    tab->update_dirty();
+    tab->on_value_change(opt_key, value);
+}
+
 void TabPrint::build()
 {
     m_presets = &m_preset_bundle->prints;
@@ -1705,6 +1716,14 @@ void TabPrint::build()
         optgroup->append_single_option_line("min_bead_width");
         optgroup->append_single_option_line("min_feature_size");
 
+        optgroup = page->new_optgroup(L("Custom parameters"));
+        auto option = optgroup->get_option("custom_parameters_print");
+        option.opt.is_code = true;
+        optgroup->append_single_option_line(option);
+        optgroup->on_change = [this](const t_config_option_key& opt_key, const boost::any& value) {
+            validate_custom_parameters(this, opt_key, value);
+        };
+
     page = add_options_page(L("Output options"), "output+page_white");
         optgroup = page->new_optgroup(L("Sequential printing"));
         optgroup->append_single_option_line("complete_objects", "sequential-printing_124589");
@@ -1725,7 +1744,7 @@ void TabPrint::build()
         optgroup = page->new_optgroup(L("Output file"));
         optgroup->append_single_option_line("gcode_comments");
         optgroup->append_single_option_line("gcode_label_objects");
-        Option option = optgroup->get_option("output_filename_format");
+        option = optgroup->get_option("output_filename_format");
         option.opt.full_width = true;
         optgroup->append_single_option_line(option);
 
@@ -2330,6 +2349,7 @@ void TabFilament::build()
         optgroup->append_single_option_line("filament_multitool_ramming_flow");
 
 
+
     add_filament_overrides_page();
 
 
@@ -2358,6 +2378,14 @@ void TabFilament::build()
         option.opt.is_code = true;
         option.opt.height = gcode_field_height;// 150;
         optgroup->append_single_option_line(option);
+
+        optgroup = page->new_optgroup(L("Custom parameters"));
+        option = optgroup->get_option("custom_parameters_filament");
+        option.opt.is_code = true;
+        optgroup->append_single_option_line(option);
+        optgroup->on_change = [this](const t_config_option_key& opt_key, const boost::any& value) {
+            validate_custom_parameters(this, opt_key, value);
+        };
 
     page = add_options_page(L("Notes"), "note");
         optgroup = page->new_optgroup(L("Notes"), 0);
@@ -2945,6 +2973,14 @@ void TabPrinter::build_fff()
         option.opt.is_code = true;
         option.opt.height = gcode_field_height;//150;
         optgroup->append_single_option_line(option);
+
+        optgroup = page->new_optgroup(L("Custom parameters"), 0);
+        option = optgroup->get_option("custom_parameters_printer");
+        option.opt.is_code = true;
+        optgroup->append_single_option_line(option);
+        optgroup->on_change = [this](const t_config_option_key& opt_key, const boost::any& value) {
+            validate_custom_parameters(this, opt_key, value);
+        };
 
     page = add_options_page(L("Notes"), "note");
         optgroup = page->new_optgroup(L("Notes"), 0);
