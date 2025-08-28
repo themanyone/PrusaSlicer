@@ -1717,7 +1717,7 @@ void TabPrint::build()
         optgroup->append_single_option_line("min_bead_width");
         optgroup->append_single_option_line("min_feature_size");
 
-        optgroup = page->new_optgroup(L("Custom parameters"));
+        optgroup = page->new_optgroup(L("Custom parameters"), 0);
         auto option = optgroup->get_option("custom_parameters_print");
         option.opt.is_code = true;
         optgroup->append_single_option_line(option);
@@ -2382,7 +2382,7 @@ void TabFilament::build()
         option.opt.height = gcode_field_height;// 150;
         optgroup->append_single_option_line(option);
 
-        optgroup = page->new_optgroup(L("Custom parameters"));
+        optgroup = page->new_optgroup(L("Custom parameters"), 0);
         option = optgroup->get_option("custom_parameters_filament");
         option.opt.is_code = true;
         optgroup->append_single_option_line(option);
