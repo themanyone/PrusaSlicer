@@ -2413,7 +2413,7 @@ void PrintConfigDef::init_fff_params()
           "The JSON must be single level (no arrays and objects). All value types are allowed, but nulls "
           "will be rejected by the parser."
     );
-    def->tooltip = (boost::format(custom_parameter_tooltip_templ) % "custom_parameter_print").str();
+    def->tooltip = custom_parameter_tooltip_templ;
     def->multiline = true;
     def->full_width = true;
     def->height = 13;
@@ -3110,7 +3110,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("custom_parameters_printer", coString);
     def->label = L("Custom printer parameters");
-    def->tooltip = (boost::format(custom_parameter_tooltip_templ) % "custom_parameter_printer").str();;
+    def->tooltip = custom_parameter_tooltip_templ;
     def->multiline = true;
     def->full_width = true;
     def->height = 12;
@@ -3129,7 +3129,7 @@ void PrintConfigDef::init_fff_params()
 
     def = this->add("custom_parameters_filament", coStrings);
     def->label = L("Custom filament parameters");
-    def->tooltip = (boost::format(custom_parameter_tooltip_templ) % "custom_parameter_filament").str();
+    def->tooltip = custom_parameter_tooltip_templ;
     def->multiline = true;
     def->full_width = true;
     def->height = 12;
