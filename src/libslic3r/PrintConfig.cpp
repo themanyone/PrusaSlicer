@@ -322,8 +322,8 @@ static const t_config_enum_values s_keys_map_EnsureVerticalShellThickness {
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(EnsureVerticalShellThickness)
 
 static const t_config_enum_values s_keys_map_CoolingSlowdownLogicType {
-    { "all_features",        int(CoolingSlowdownLogicType::AllFeatures)        },
-    { "preserve_perimeters", int(CoolingSlowdownLogicType::PreservePerimeters) },
+    { "uniform_cooling",    int(CoolingSlowdownLogicType::UniformCooling)    },
+    { "consistent_surface", int(CoolingSlowdownLogicType::ConsistentSurface) },
 };
 CONFIG_OPTION_ENUM_DEFINE_STATIC_MAPS(CoolingSlowdownLogicType)
 
@@ -946,14 +946,14 @@ void PrintConfigDef::init_fff_params()
     def = this->add("cooling_slowdown_logic", coEnums);
     def->label = L("Cooling slowdown logic");
     def->tooltip = L("Determines how the printer slows down layer printing when the minimum layer time isn't reached. "
-                     "'Preserve perimeters' first tries to preserve the print speeds of the first two perimeters by slowing all other features. "
+                     "'Consistent surface' first tries to preserve the print speeds of the first two perimeters by slowing all other features. "
                      "Only if this isn't sufficient, it also slows down those first two perimeters. "
-                     "'All features' slows down all print features, including the first two perimeters.");
+                     "'Uniform cooling' slows down all print features, including the first two perimeters.");
     def->set_enum<CoolingSlowdownLogicType>({
-        { "all_features",        L("All features")        },
-        { "preserve_perimeters", L("Preserve perimeters") },
+        { "uniform_cooling",    L("Uniform cooling")    },
+        { "consistent_surface", L("Consistent surface") },
     });
-    def->set_default_value(new ConfigOptionEnums<CoolingSlowdownLogicType>{ CoolingSlowdownLogicType::AllFeatures });
+    def->set_default_value(new ConfigOptionEnums<CoolingSlowdownLogicType>{ CoolingSlowdownLogicType::UniformCooling });
 
     def = this->add("cooling_perimeter_transition_distance", coFloats);
     def->label = L("Perimeter transition distance");
