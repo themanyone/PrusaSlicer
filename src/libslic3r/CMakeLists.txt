@@ -575,9 +575,9 @@ add_library(libslic3r_cgal STATIC
     Geometry/VoronoiUtilsCgal.hpp Geometry/VoronoiUtilsCgal.cpp
     IntersectionPoints.hpp IntersectionPoints.cpp
     TriangleMesh.hpp TriangleMesh.cpp
+    TriangleMeshSlicer.hpp TriangleMeshSlicer.cpp
     MeshBoolean.hpp MeshBoolean.cpp
-    Tesselate.cpp
-    Tesselate.hpp
+    Tesselate.hpp Tesselate.cpp
     TryCatchSignal.hpp TryCatchSignal.cpp
     Triangulation.hpp Triangulation.cpp
     SLA/SupportIslands/VoronoiDiagramCGAL.hpp SLA/SupportIslands/VoronoiDiagramCGAL.cpp
