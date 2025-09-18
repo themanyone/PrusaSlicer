@@ -90,7 +90,7 @@ void stl_generate_shared_vertices(stl_file *stl, indexed_triangle_set &its)
 				fan_traversal_facet_visited[facet_in_fan_idx] = fan_traversal_stamp;
 
 				// next_edge is an index of the starting vertex of the edge, not an index of the opposite vertex to the edge!
-				uint32_t next_facet = stl->neighbors_start[facet_in_fan_idx].neighbor[next_edge];
+				int next_facet = stl->neighbors_start[facet_in_fan_idx].neighbor[next_edge];
 				if (next_facet == -1) {
 					// No neighbor going in the current direction.
 					if (traversal_reversed) {
@@ -139,9 +139,9 @@ bool its_write_off(const indexed_triangle_set &its, const char *file)
 
 	fprintf(fp, "OFF\n");
 	fprintf(fp, "%d %d 0\n", (int)its.vertices.size(), (int)its.indices.size());
-	for (int i = 0; i < its.vertices.size(); ++ i)
+	for (size_t i = 0; i < its.vertices.size(); ++ i)
 		fprintf(fp, "\t%f %f %f\n", its.vertices[i](0), its.vertices[i](1), its.vertices[i](2));
-	for (uint32_t i = 0; i < its.indices.size(); ++ i)
+	for (size_t i = 0; i < its.indices.size(); ++ i)
 		fprintf(fp, "\t3 %d %d %d\n", its.indices[i][0], its.indices[i][1], its.indices[i][2]);
 	fclose(fp);
 	return true;
@@ -172,7 +172,7 @@ bool its_write_vrml(const indexed_triangle_set &its, const char *file)
 	fprintf(fp, "\t\tDEF STLVertices Coordinate3 {\n");
 	fprintf(fp, "\t\t\tpoint [\n");
 
-	int i = 0;
+	size_t i = 0;
 	for (; i + 1 < its.vertices.size(); ++ i)
 		fprintf(fp, "\t\t\t\t%f %f %f,\n", its.vertices[i](0), its.vertices[i](1), its.vertices[i](2));
 	fprintf(fp, "\t\t\t\t%f %f %f]\n", its.vertices[i](0), its.vertices[i](1), its.vertices[i](2));
