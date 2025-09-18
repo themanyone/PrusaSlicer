@@ -289,4 +289,4 @@ void stl_facet_stats(stl_file *stl, stl_facet facet, bool &first)
 		stl->stats.max = stl->stats.max.cwiseMax(facet.vertex[i]);
 	}
 }
-}
+
