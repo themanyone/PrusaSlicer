@@ -90,7 +90,7 @@ void stl_generate_shared_vertices(stl_file *stl, indexed_triangle_set &its)
 				fan_traversal_facet_visited[facet_in_fan_idx] = fan_traversal_stamp;
 
 				// next_edge is an index of the starting vertex of the edge, not an index of the opposite vertex to the edge!
-				int next_facet = stl->neighbors_start[facet_in_fan_idx].neighbor[next_edge];
+				uint32_t next_facet = stl->neighbors_start[facet_in_fan_idx].neighbor[next_edge];
 				if (next_facet == -1) {
 					// No neighbor going in the current direction.
 					if (traversal_reversed) {
