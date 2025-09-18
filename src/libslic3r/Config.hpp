@@ -394,6 +394,9 @@ public:
     T value;
     explicit ConfigOptionSingle(T value) : value(std::move(value)) {}
     operator T() const { return this->value; }
+    // Ensure base virtual serialize() is visible when cereal defines a template serialize
+    // in this derived class so we don't hide the base overloads (fix -Woverloaded-virtual).
+    using ConfigOption::serialize;
     
     void set(const ConfigOption *rhs) override
     {
@@ -509,6 +512,9 @@ public:
     // Let's show it was intentional (warnings).
     using ConfigOption::set;
     using ConfigOption::is_nil;
+    // Also unhide serialize() from ConfigOption to avoid -Woverloaded-virtual when
+    // derived vector templates provide a cereal serialize template.
+    using ConfigOption::serialize;
 
 
 protected:
