@@ -2248,7 +2248,8 @@ void PrintConfigDef::init_fff_params()
     def = this->add("machine_max_junction_deviation", coFloats);
     def->full_label = L("Maximum junction deviation");
     def->category = L("Machine limits");
-    def->tooltip = L("Maximum junction deviation (M205 J, only apply if JD > 0 for Marlin Firmware).");
+    def->tooltip = L("Maximum Junction Deviation (M205 J; applies only if JD > 0 on Marlin).\n"
+                     "When enabled, PrusaSlicer uses it for time estimates and G-code Viewer speeds instead of Jerk.");
     def->sidetext = L("mm");
     def->min = 0;
     def->mode = comAdvanced;
