@@ -720,7 +720,7 @@ void Plater::priv::init()
     // Set initial sash position (e.g., 70% of width for left panel)
     int initial_width = q->GetSize().GetWidth();
     splitter->SetSashPosition(static_cast<int>(initial_width * 0.7));
-     // Ensure the left panel is visible and sidebar has a minimum width
+    // Ensure the left panel is visible and sidebar has a minimum width
     splitter->Bind(wxEVT_SPLITTER_SASH_POS_CHANGED, [this, splitter](wxSplitterEvent& event) {
         // Prevent the sash from being dragged too far to the left
         int min_sash_pos = 22 * wxGetApp().em_unit();
@@ -729,11 +729,14 @@ void Plater::priv::init()
         }
         event.Skip();
     });
-    splitter->Bind(wxEVT_SIZE, [this, splitter](wxSizeEvent& event) {
-        // Maintain the sash position as a percentage of the window width
-        int new_width = event.GetSize().GetWidth();
-        int new_sash_pos = static_cast<int>(new_width * 0.7);
-        splitter->SetSashPosition(new_sash_pos);
+    splitter->Bind(wxEVT_SIZE, [this, splitter](wxSizeEvent &event) {
+        // set static variable to hold the previous size
+        static int old_sz = event.GetSize().GetWidth();
+        // Maintain the sash position as window width changes
+        int new_sz = event.GetSize().GetWidth();
+        splitter->SetSashPosition(new_sz - (old_sz - splitter->GetSashPosition()));
+        old_sz = new_sz;
+        event.Skip();
     });
 
     // Ensure the left panel is visible and sidebar has a minimum width
@@ -1246,17 +1249,17 @@ void Plater::priv::collapse_sidebar(bool collapse)
     collapse_toolbar.set_enabled(collapse || wxGetApp().app_config->get_bool("show_collapse_button"));
 
     notification_manager->set_sidebar_collapsed(collapse);
-
+    static int old_position = q->GetSize().GetWidth() * 0.7;
     // Adjust splitter behavior when collapsing or expanding the sidebar
-    wxSplitterWindow* splitter = static_cast<wxSplitterWindow*>(sidebar->GetParent());
-    int sz = static_cast<int>(splitter->GetSize().GetWidth() * 0.7);
+    wxSplitterWindow *splitter = static_cast<wxSplitterWindow *>(sidebar->GetParent());
     if (collapse) {
         // Hide the sidebar
         sidebar->Hide();
+        old_position = splitter->GetSashPosition();
         splitter->Unsplit(sidebar); // Remove the sidebar from the splitter
     } else {
         sidebar->Show();
-        splitter->SplitVertically(splitter->GetWindow1(), sidebar, splitter->GetSize().GetWidth() * 0.7);
+        splitter->SplitVertically(splitter->GetWindow1(), sidebar, old_position);
     }
     q->Layout();
     q->Refresh();
