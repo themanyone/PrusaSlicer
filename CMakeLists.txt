@@ -238,7 +238,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
     if (CMAKE_VERSION VERSION_LESS "3.1")
         # Workaround for an old CMake, which does not understand CMAKE_CXX_STANDARD.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -w -fPIC")
     endif()
 
     # Boost on Raspberry-Pi does not link to pthreads.
